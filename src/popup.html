@@ -1,13 +1,88 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
-        body { width: 200px; padding: 10px; font-family: sans-serif; }
-        h3 { margin-top: 0; }
+        body {
+            width: 200px;
+            padding: 10px;
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        .status.active {
+            color: #388e3c;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #388e3c;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
+
 <body>
     <h3>Ad Blocker</h3>
-    <p>Active on YouTube.</p>
+    <div id="status" class="status">Inactive</div>
+
+    <label class="switch">
+        <input type="checkbox" id="toggle">
+        <span class="slider"></span>
+    </label>
+
+    <script src="popup.js"></script>
 </body>
+
 </html>

@@ -37,10 +37,26 @@ function removeDisplayAds() {
     });
 }
 
+let isEnabled = true;
+
 function checkAds() {
+    if (!isEnabled) return;
+
     skipVideoAds();
     removeDisplayAds();
 }
+
+// Check initial state
+chrome.storage.local.get(['enabled'], (result) => {
+    isEnabled = result.enabled !== false;
+});
+
+// Listen for changes
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && 'enabled' in changes) {
+        isEnabled = changes.enabled.newValue;
+    }
+});
 
 // Observer to watch for DOM changes (navigation, ads loading)
 const observer = new MutationObserver((mutations) => {

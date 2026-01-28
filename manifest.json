@@ -5,16 +5,23 @@
   "description": "Blocks and skips ads on YouTube.",
   "permissions": [
     "scripting",
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "host_permissions": [
     "https://www.youtube.com/*"
   ],
   "content_scripts": [
     {
-      "matches": ["https://www.youtube.com/watch*"],
-      "js": ["src/content.js"],
-      "css": ["src/style.css"],
+      "matches": [
+        "https://www.youtube.com/watch*"
+      ],
+      "js": [
+        "src/content.js"
+      ],
+      "css": [
+        "src/style.css"
+      ],
       "run_at": "document_end"
     }
   ],
