@@ -1,0 +1,10 @@
+/* CSS to hide known ad elements */
+.ytp-ad-overlay-container,
+.ytp-ad-message-container,
+ytd-promoted-sparkles-web-renderer,
+ytd-display-ad-renderer,
+ytd-compact-promoted-video-renderer,
+ytd-promoted-video-renderer,
+ytd-banner-promo-renderer-background {
+    display: none !important;
+}
