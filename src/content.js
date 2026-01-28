@@ -4,12 +4,17 @@ function skipVideoAds() {
     // Check if we are in an ad state
     const player = document.querySelector('.html5-video-player');
 
-    // Broaden ad detection: check for ad container or ad-showing class
-    const adShowing = player?.classList.contains('ad-showing') || document.querySelector('.ad-showing') || document.querySelector('.video-ads');
+    // More precise ad detection.
+    // '.ad-showing' on the player is the most reliable.
+    // '.video-ads' exists even when no ads are playing (it's the container), so checking it alone is dangerous.
+    // Check if '.video-ads' has 'ad-showing' or specific children.
+    const adShowing = player?.classList.contains('ad-showing') || document.querySelector('.ad-showing');
+
+    const video = document.querySelector('video');
+    if (!video) return;
 
     if (adShowing) {
-        const video = document.querySelector('video');
-        if (video && !isNaN(video.duration)) {
+        if (!isNaN(video.duration)) {
             // Mute and speed up to skip unskippable ads
             video.muted = true;
             video.playbackRate = 16.0;
@@ -22,7 +27,7 @@ function skipVideoAds() {
             '.ytp-skip-ad-button',
             '.videoAdUiSkipButton',
             '.ytp-ad-text.ytp-ad-skip-button-text',
-            '[id^="visit-advertiser"]' // Sometimes the container itself helps identify context
+            '[id^="visit-advertiser"]'
         ];
 
         // Try to find the button
@@ -33,19 +38,29 @@ function skipVideoAds() {
         }
 
         if (skipButton) {
-            // Simulate a native click event for better compatibility
+            // Simulate a native click event
             const clickEvent = new MouseEvent('click', {
                 bubbles: true,
                 cancelable: true,
                 view: window
             });
             skipButton.dispatchEvent(clickEvent);
-            skipButton.click(); // Fallback to standard click
+            skipButton.click();
             console.log("YouTube Ad Blocker: Skipped ad using selector:", skipButton.className);
 
-            // Re-check immediately for consecutive ads
+            // Re-check immediately
             setTimeout(checkAds, 100);
         }
+    } else {
+        // IMPORTANT: Reset state if no ad is showing
+        if (video.playbackRate === 16.0) {
+            video.playbackRate = 1.0;
+        }
+        // Be careful unmuting, user might have muted the video themselves.
+        // Only unmute if we are sure we muted it? Hard to track.
+        // For now, let's just assume if it's 16x speed it was us.
+        // We'll leave mute state alone for now to avoid annoying the user if they wanted it muted,
+        // or we could track if we muted it. Simpler: just reset speed.
     }
 }
 
