@@ -3,19 +3,48 @@ console.log("YouTube Ad Blocker: Content script loaded.");
 function skipVideoAds() {
     // Check if we are in an ad state
     const player = document.querySelector('.html5-video-player');
-    if (player && player.classList.contains('ad-showing')) {
+
+    // Broaden ad detection: check for ad container or ad-showing class
+    const adShowing = player?.classList.contains('ad-showing') || document.querySelector('.ad-showing') || document.querySelector('.video-ads');
+
+    if (adShowing) {
         const video = document.querySelector('video');
-        if (video) {
+        if (video && !isNaN(video.duration)) {
             // Mute and speed up to skip unskippable ads
             video.muted = true;
             video.playbackRate = 16.0;
         }
 
-        // Click the skip button if available
-        const skipButton = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-skip-ad-button');
+        // Expanded list of known skip button selectors
+        const skipButtonSelectors = [
+            '.ytp-ad-skip-button',
+            '.ytp-ad-skip-button-modern',
+            '.ytp-skip-ad-button',
+            '.videoAdUiSkipButton',
+            '.ytp-ad-text.ytp-ad-skip-button-text',
+            '[id^="visit-advertiser"]' // Sometimes the container itself helps identify context
+        ];
+
+        // Try to find the button
+        let skipButton = null;
+        for (const selector of skipButtonSelectors) {
+            skipButton = document.querySelector(selector);
+            if (skipButton) break;
+        }
+
         if (skipButton) {
-            skipButton.click();
-            console.log("YouTube Ad Blocker: Skipped ad.");
+            // Simulate a native click event for better compatibility
+            const clickEvent = new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            });
+            skipButton.dispatchEvent(clickEvent);
+            skipButton.click(); // Fallback to standard click
+            console.log("YouTube Ad Blocker: Skipped ad using selector:", skipButton.className);
+
+            // Re-check immediately for consecutive ads
+            setTimeout(checkAds, 100);
         }
     }
 }
@@ -28,7 +57,9 @@ function removeDisplayAds() {
         'ytd-promoted-sparkles-web-renderer',
         'ytd-display-ad-renderer',
         '#masthead-ad',
-        'ytd-banner-promo-renderer'
+        'ytd-banner-promo-renderer',
+        'ytd-ad-slot-renderer', // Added generic ad slot
+        'ytd-in-feed-ad-layout-renderer' // Added feed ad renderer
     ];
 
     adSelectors.forEach(selector => {
@@ -70,5 +101,5 @@ observer.observe(document.body, {
 });
 
 // Also run periodically just in case
-setInterval(checkAds, 1000);
+setInterval(checkAds, 500);
 
