@@ -65,32 +65,7 @@
             letter-spacing: -0.5px;
         }
 
-        .status-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-        }
 
-        .status-text {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        #status {
-            font-size: 24px;
-            font-weight: 700;
-            transition: color 0.3s ease;
-        }
-
-        #status.active {
-            color: var(--text-primary);
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-        }
 
         /* Toggle Switch */
         .switch-container {
@@ -177,10 +152,7 @@
         <h1>Ad Blocker</h1>
     </div>
 
-    <div class="status-container">
-        <div class="status-text">Status</div>
-        <div id="status">Inactive</div>
-    </div>
+
 
     <div class="switch-container">
         <input type="checkbox" id="toggle" class="switch-input">
@@ -189,6 +161,10 @@
 
     <div class="footer">
         Zero Ads. Pure Content.
+        <br>
+        <a href="https://github.com/alvarotala/youtube-ads-blocker-chrome" target="_blank"
+            style="color: inherit; text-decoration: underline; margin-top: 5px; display: inline-block;">View on
+            GitHub</a>
     </div>
 
     <script src="popup.js"></script>
